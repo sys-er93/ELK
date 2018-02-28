@@ -1,0 +1,35 @@
+version: "2"
+
+services:    
+ elasticsearch:        
+    build: elastic
+    #image: elasticsearch
+    container_name: Prueba_elasticsearch
+    hostname: elasticsearch       
+    volumes:
+     - ./elastic/data:/usr/share/elasticsearch/data
+     - ./elastic/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+#     - /root/docker-web/ssh:/var/www/.ssh
+#     - /root/docker-web/apache2:/etc/apache2    
+    networks:
+     default:
+       ipv4_address: 192.168.160.10
+
+    restart: always       
+ logstash:
+    image: docker.elastic.co/logstash/logstash:6.2.2
+    container_name: Prueba_logstash
+    hostname: logstash
+    volumes:
+     - ./logstash/pipeline/:/usr/share/logstash/pipeline/
+     - ./logstash/settings/:/usr/share/logstash/config/
+    links:
+     - elasticsearch
+    networks:
+     default:
+       ipv4_address: 192.168.160.11
+    restart: always
+networks:
+  default:
+    external:
+      name: dockerweb_WOW_NETWORK
